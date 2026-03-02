@@ -1,3 +1,6 @@
+import streamlit as st
+import random
+import time
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Master IUT", page_icon="💰")
 

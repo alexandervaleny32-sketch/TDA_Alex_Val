@@ -3,9 +3,9 @@ import random
 import time
 
 # ===== CONFIGURACIÓN DEL JUEGO =====
-NUM_PREGUNTAS = 10  # 🎮 Cambia este número para jugar más o menos preguntas
-PUNTOS_POR_PREGUNTA = 2
-PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA
+NUM_PREGUNTAS = 10  # Al cambiar este número, se puede aumentar la cantidad de preguntas para jugar, no puede ser mayor a 20
+PUNTOS_POR_PREGUNTA = 2 #Se usa para ajustar cuanto puntos vale cada pregunta
+PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA  #Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")

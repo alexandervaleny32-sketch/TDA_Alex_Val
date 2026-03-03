@@ -1,6 +1,12 @@
 import streamlit as st
 import random
 import time
+
+# ===== CONFIGURACIÓN DEL JUEGO =====
+NUM_PREGUNTAS = 10  # 🎮 Cambia este número para jugar más o menos preguntas
+PUNTOS_POR_PREGUNTA = 2
+PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA
+
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
 
@@ -41,7 +47,8 @@ if 'indice' not in st.session_state:
     st.session_state.indice = 0
     st.session_state.puntos = 0
     st.session_state.juego_terminado = False
-
+    st.session_state.num_preguntas = NUM_PREGUNTAS  # Guardamos la configuración
+    
 # --- 3. FUNCIONES DE AUDIO ---
 # Nota para el alumno: Streamlit puede reproducir audio desde una URL
 def reproducir_sonido(url):
@@ -91,8 +98,8 @@ if not st.session_state.juego_terminado:
             # reproducir_sonido("URL_DE_SONIDO_ERROR")
             time.sleep(1)
 
-        # Avanzamos a la siguiente pregunta
-        if st.session_state.indice < 9: # Solo jugamos 10 preguntas por ronda (anteriormente eran 5)
+        # Verificamos si aún quedan preguntas por jugar
+        if st.session_state.indice < st.session_state.num_preguntas - 1:
             st.session_state.indice += 1
             st.rerun()
         else:
@@ -102,13 +109,14 @@ if not st.session_state.juego_terminado:
 else:
     # PANTALLA FINAL
     st.header("🏁 ¡Fin del Juego!")
-    st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / 10")
+    st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {PUNTUACION_MAXIMA}")
     
-    if st.session_state.puntos >= 8:
+    # Calculamos el porcentaje de aciertos (80% para ser experto)
+    if st.session_state.puntos >= PUNTUACION_MAXIMA * 0.8:
         st.balloons()
-        st.success("¡Eres un experto! Ya puedes trabajar en la cabecera de la TDA.")
+        st.success("¡Eres un experto! Ya puedes trabajar en la cabecera de la TDA y eres conocedor de la Electrónica.")
     else:
-        st.warning("Sigue estudiando, la norma ISDB-Tb te espera.")
+        st.warning("Sigue estudiando, la norma ISDB-Tb y ley de Ohm te espera.")
     
     if st.button("Reintentar"):
         # Limpiamos todo para empezar de nuevo

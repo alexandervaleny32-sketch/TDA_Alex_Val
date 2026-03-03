@@ -51,9 +51,12 @@ if 'indice' not in st.session_state:
     
 # --- 3. FUNCIONES DE AUDIO ---
 # Nota para el alumno: Streamlit puede reproducir audio desde una URL
-def reproducir_sonido(url):
-    st.markdown(f'<audio src="{url}" autoplay style="display:none"></audio>', unsafe_allow_html=True)
-
+def reproducir_sonido_correcto():
+    """Reproduce sonido de respuesta correcta"""
+    try:
+        st.audio("Folder/Respuesta correcta_(PAPI CACHAME).mp3", format="audio/mp3", autoplay=True)
+    except:
+        pass  # Si falla, que no rompa la app
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
 st.divider()
@@ -91,8 +94,7 @@ if not st.session_state.juego_terminado:
     if seleccion:
         if seleccion == pregunta_actual['c']:
             st.success("¡CORRECTO! 🌟")
-            # AQUÍ PODRÍAS PONER UN SONIDO DE VICTORIA
-            # reproducir_sonido("URL_DE_SONIDO_CORRECTO")
+            reproducir_sonido_correcto()   #Audio de victoria
             st.session_state.puntos += 2
             time.sleep(1) # Pausa dramática
         else:

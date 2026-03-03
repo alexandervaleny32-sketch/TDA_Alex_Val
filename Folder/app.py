@@ -57,6 +57,8 @@ def reproducir_sonido(url):
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
 st.divider()
+st.progress(st.session_state.indice / st.session_state.num_preguntas)
+st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
 if not st.session_state.juego_terminado:
     # Obtenemos la pregunta actual del pool

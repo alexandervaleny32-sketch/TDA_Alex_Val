@@ -50,7 +50,8 @@ if 'indice' not in st.session_state:
     st.session_state.indice = 0
     st.session_state.puntos = 0
     st.session_state.juego_terminado = False
-    st.session_state.num_preguntas = NUM_PREGUNTAS  # Guardamos la configuración
+    st.session_state.num_preguntas = NUM_PREGUNTAS    #Guarda la cantidad de preguntas
+    st.session_state.respuesta_confirmada = False  # Controla si ya respondio
     
 # --- 3. FUNCIONES DE AUDIO ---
 # --- 3. FUNCIONES DE AUDIO ---
@@ -91,53 +92,62 @@ st.progress(st.session_state.indice / st.session_state.num_preguntas)
 st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
 if not st.session_state.juego_terminado:
+    # Reproducir audio de pregunta (si existe la función)
+    if 'reproducir_audio_pregunta' in globals():
+        reproducir_audio_pregunta()
     
-    # Obtenemos la pregunta actual del pool
     pregunta_actual = st.session_state.pool_preguntas[st.session_state.indice]
     
     st.subheader(f"Pregunta {st.session_state.indice + 1}:")
     st.write(f"### {pregunta_actual['p']}")
     
-    # Creamos los botones para las opciones
-    # El alumno puede cambiar el diseño de estos botones
-    opciones = pregunta_actual['o']
-    
-    # Usamos columnas para que parezca el tablero del programa de TV
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        btn_a = st.button(f"A) {opciones[0]}", use_container_width=True)
-        btn_b = st.button(f"B) {opciones[1]}", use_container_width=True)
-    with col2:
-        btn_c = st.button(f"C) {opciones[2]}", use_container_width=True)
-        btn_d = st.button(f"D) {opciones[3]}", use_container_width=True)
+    # --- BOTONES DE RESPUESTA (solo si no ha respondido) ---
+    if not st.session_state.respuesta_confirmada:
+        opciones = pregunta_actual['o']
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            btn_a = st.button(f"A) {opciones[0]}", use_container_width=True)
+            btn_b = st.button(f"B) {opciones[1]}", use_container_width=True)
+        with col2:
+            btn_c = st.button(f"C) {opciones[2]}", use_container_width=True)
+            btn_d = st.button(f"D) {opciones[3]}", use_container_width=True)
 
-    # Lógica de respuesta
-    seleccion = None
-    if btn_a: seleccion = opciones[0]
-    if btn_b: seleccion = opciones[1]
-    if btn_c: seleccion = opciones[2]
-    if btn_d: seleccion = opciones[3]
+        # Detectar qué botón se presionó
+        seleccion = None
+        if btn_a: seleccion = opciones[0]
+        if btn_b: seleccion = opciones[1]
+        if btn_c: seleccion = opciones[2]
+        if btn_d: seleccion = opciones[3]
 
-    if seleccion:
-        if seleccion == pregunta_actual['c']:
-            st.success("¡CORRECTO! 🌟")
-            reproducir_sonido_correcto()   #Audio de correcto
-            st.session_state.puntos += 2
-            time.sleep(TIEMPO_ESPERA_CORRECTO) # Pausa para la reproduccion de audio de repuesta correcta
-        else:
-            st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
-            reproducir_sonido_incorrecto()  #Audio de incorrecto
-            time.sleep(TIEMPO_ESPERA_INCORRECTO) # Pausa para la reproduccion de audio de repuesta incorrecta
+        # Procesar respuesta
+        if seleccion:
+            # Bloquear más respuestas
+            st.session_state.respuesta_confirmada = True
+            
+            if seleccion == pregunta_actual['c']:
+                st.success("¡CORRECTO! 🌟")
+                if 'reproducir_sonido_correcto' in globals():
+                    reproducir_sonido_correcto()
+                st.session_state.puntos += 2
+                time.sleep(TIEMPO_ESPERA_CORRECTO)
+            else:
+                st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
+                if 'reproducir_sonido_incorrecto' in globals():
+                    reproducir_sonido_incorrecto()
+                time.sleep(TIEMPO_ESPERA_INCORRECTO)
 
-        # Verificamos si aún quedan preguntas por jugar
-
-        if st.session_state.indice < st.session_state.num_preguntas - 1:
-            st.session_state.indice += 1
-            st.rerun()
-        else:
-            st.session_state.juego_terminado = True
-            st.rerun()
+            # Avanzar a siguiente pregunta
+            if st.session_state.indice < st.session_state.num_preguntas - 1:
+                st.session_state.indice += 1
+                st.session_state.respuesta_confirmada = False  # Reset para nueva pregunta
+                st.rerun()
+            else:
+                st.session_state.juego_terminado = True
+                st.rerun()
+    else:
+        # Mensaje mientras espera para la siguiente pregunta
+        st.info("⏳ Respuesta registrada. Preparando siguiente pregunta...")
 
 else:
     # PANTALLA FINAL

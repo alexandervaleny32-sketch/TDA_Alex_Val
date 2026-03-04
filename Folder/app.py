@@ -8,6 +8,7 @@ PUNTOS_POR_PREGUNTA = 2 #Se usa para ajustar cuanto puntos vale cada pregunta
 PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA  #Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
 TIEMPO_ESPERA_CORRECTO = 2  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta correcta
 TIEMPO_ESPERA_INCORRECTO = 6  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta incorrecta
+REPRODUCIR_AUDIO_PREGUNTA = true # Activa o desactiva la pista de audio
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
@@ -52,7 +53,15 @@ if 'indice' not in st.session_state:
     st.session_state.num_preguntas = NUM_PREGUNTAS  # Guardamos la configuración
     
 # --- 3. FUNCIONES DE AUDIO ---
-# Nota para el alumno: Streamlit puede reproducir audio desde una URL
+
+def reproducir_audio_pregunta():
+    """Reproduce sonido corto de pregunta (5 segundos)"""
+    if REPRODUCIR_AUDIO_PREGUNTA:  # Solo si está activado
+        try:
+            st.audio("Folder/Pregunta (Quién quiere ser millonario).mp3", format="audio/mp3", autoplay=True)
+        except:
+            pass  # Si falla, que no rompa la app
+
 def reproducir_sonido_correcto():
     """Reproduce sonido de respuesta correcta"""
     try:
@@ -74,6 +83,7 @@ st.progress(st.session_state.indice / st.session_state.num_preguntas)
 st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
 if not st.session_state.juego_terminado:
+    reproducir_audio_pregunta()  #Reproduce el audio cada vez que se hace la pregunta
     # Obtenemos la pregunta actual del pool
     pregunta_actual = st.session_state.pool_preguntas[st.session_state.indice]
     

@@ -55,42 +55,72 @@ if 'indice' not in st.session_state:
 # --- 3. FUNCIONES DE AUDIO ---
 
 def reproducir_audio_pregunta():
-    """Versión de diagnóstico"""
+    """Reproduce audio usando técnica anti-bloqueo"""
     if REPRODUCIR_AUDIO_PREGUNTA:
         try:
-            # 1. Mostrar el directorio actual
-            import os
-            st.write("📁 Archivos en Folder:")
-            archivos = os.listdir("Folder")
-            st.write(archivos)
+            # Verificar si ya se reprodujo en esta pregunta
+            if 'audio_pregunta_reproducido' not in st.session_state:
+                st.session_state.audio_pregunta_reproducido = False
             
-            # 2. Verificar si el archivo existe
-            nombre_archivo = "Folder/Pregunta (Quién quiere ser millonario).mp3"
-            if os.path.exists(nombre_archivo):
-                st.success(f"✅ Archivo encontrado: {nombre_archivo}")
-                
-                # 3. Mostrar tamaño del archivo
-                tamaño = os.path.getsize(nombre_archivo)
-                st.write(f"📊 Tamaño: {tamaño} bytes")
-                
-                # 4. Intentar reproducir
-                with open(nombre_archivo, "rb") as f:
+            if not st.session_state.audio_pregunta_reproducido:
+                with open("Folder/Pregunta (Quién quiere ser millonario).mp3", "rb") as f:
                     audio_bytes = f.read()
                 
                 import base64
                 audio_base64 = base64.b64encode(audio_bytes).decode()
                 
-                st.markdown(
-                    f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}"></audio>',
-                    unsafe_allow_html=True
-                )
-                st.write("🔊 Controles de audio mostrados arriba")
-                
-            else:
-                st.error(f"❌ Archivo NO encontrado: {nombre_archivo}")
+                # HTML con múltiples estrategias de autoplay
+                audio_html = f"""
+                    <div style="display: none;">
+                        <audio id="audioForzado" preload="auto">
+                            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+                        </audio>
+                    </div>
+                    <script>
+                        (function() {{
+                            var audio = document.getElementById('audioForzado');
+                            
+                            // Estrategia 1: Intentar reproducir inmediatamente
+                            var playPromise = audio.play();
+                            
+                            if (playPromise !== undefined) {{
+                                playPromise.then(function() {{
+                                    console.log('✅ Audio reproduciéndose automáticamente');
+                                }}).catch(function(error) {{
+                                    console.log('❌ Autoplay bloqueado: ' + error);
+                                    
+                                    // Estrategia 2: Esperar a que el usuario haga clic en cualquier parte
+                                    document.body.addEventListener('click', function() {{
+                                        audio.play();
+                                    }}, {{ once: true }});
+                                    
+                                    // Estrategia 3: Intentar cada segundo por 5 segundos
+                                    var intentos = 0;
+                                    var intervalo = setInterval(function() {{
+                                        audio.play().then(function() {{
+                                            clearInterval(intervalo);
+                                        }}).catch(function() {{
+                                            intentos++;
+                                            if (intentos >= 5) clearInterval(intervalo);
+                                        }});
+                                    }}, 1000);
+                                }});
+                            }}
+                            
+                            audio.volume = 0.7;
+                        }})();
+                    </script>
+                """
+                st.markdown(audio_html, unsafe_allow_html=True)
+                st.session_state.audio_pregunta_reproducido = True
                 
         except Exception as e:
-            st.error(f"🔥 Error: {e}")
+            st.warning(f"🔊 Audio: {e}")
+
+def reset_audio_pregunta():
+    """Resetea el estado del audio para la siguiente pregunta"""
+    if 'audio_pregunta_reproducido' in st.session_state:
+        st.session_state.audio_pregunta_reproducido = False
 
 def reproducir_sonido_correcto():
     """Reproduce sonido de respuesta correcta"""
@@ -153,6 +183,8 @@ if not st.session_state.juego_terminado:
             time.sleep(TIEMPO_ESPERA_INCORRECTO) # Pausa para la reproduccion de audio de repuesta incorrecta
 
         # Verificamos si aún quedan preguntas por jugar
+        reset_audio_pregunta()
+        
         if st.session_state.indice < st.session_state.num_preguntas - 1:
             st.session_state.indice += 1
             st.rerun()

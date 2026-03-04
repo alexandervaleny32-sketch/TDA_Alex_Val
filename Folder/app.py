@@ -110,7 +110,7 @@ if not st.session_state.juego_terminado:
         else:
             st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
             reproducir_sonido_incorrecto()  #Audio de incorrecto
-            time.sleep(TIEMPO_ESPERA_CORRECTO) # Pausa para la reproduccion de audio de repuesta correcta
+            time.sleep(TIEMPO_ESPERA_INCORRECTO) # Pausa para la reproduccion de audio de repuesta correcta
 
         # Verificamos si aún quedan preguntas por jugar
         if st.session_state.indice < st.session_state.num_preguntas - 1:

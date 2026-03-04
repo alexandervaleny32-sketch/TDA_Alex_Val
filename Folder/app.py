@@ -75,13 +75,14 @@ def reproducir_sonido_incorrecto():
         pass
 
 def reproducir_audio_pregunta():
-    """Reproduce audio de pregunta - versión simple"""
+    """Versión de prueba con mensaje"""
     if REPRODUCIR_AUDIO_PREGUNTA:
+        st.write("🔊 Intentando reproducir audio...")
         try:
-            # Usar st.audio directamente con autoplay
             st.audio(URL_AUDIO_PREGUNTA, format="audio/mp3", autoplay=True)
-        except:
-            pass
+            st.success("✅ Audio debería estar sonando")
+        except Exception as e:
+            st.error(f"❌ Error: {e}")
 
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")

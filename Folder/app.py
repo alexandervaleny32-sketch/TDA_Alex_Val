@@ -53,22 +53,35 @@ if 'indice' not in st.session_state:
     st.session_state.num_preguntas = NUM_PREGUNTAS  # Guardamos la configuración
     
 # --- 3. FUNCIONES DE AUDIO ---
+# --- 3. FUNCIONES DE AUDIO ---
 
-
+# ===== URLs DIRECTAS DE GITHUB (RAW) =====
+URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3"
+URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3"
+URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3"
 
 def reproducir_sonido_correcto():
-    """Reproduce sonido de respuesta correcta"""
+    """Reproduce sonido de respuesta correcta desde URL"""
     try:
-        st.audio("Folder/Respuesta correcta_(PAPI CACHAME).mp3", format="audio/mp3", autoplay=True)
+        st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)
     except:
         pass  # Si falla, que no rompa la app
 
 def reproducir_sonido_incorrecto():
-    """Reproduce sonido de respuesta incorrecta"""
+    """Reproduce sonido de respuesta incorrecta desde URL"""
     try:
-        st.audio("Folder/Incorrecto (Sonido de decepción).mp3", format="audio/mp3", autoplay=True)
+        st.audio(URL_INCORRECTO, format="audio/mp3", autoplay=True)
     except:
-        pass  # Si falla, que no rompa la app
+        pass
+
+def reproducir_audio_pregunta():
+    """Reproduce audio de pregunta - versión simple"""
+    if REPRODUCIR_AUDIO_PREGUNTA:
+        try:
+            # Usar st.audio directamente con autoplay
+            st.audio(URL_AUDIO_PREGUNTA, format="audio/mp3", autoplay=True)
+        except:
+            pass
 
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")

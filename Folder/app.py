@@ -77,7 +77,7 @@ st.progress(st.session_state.indice / st.session_state.num_preguntas)
 st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
 if not st.session_state.juego_terminado:
-    reproducir_audio_pregunta()  #Reproduce el audio cada vez que se hace la pregunta
+    
     # Obtenemos la pregunta actual del pool
     pregunta_actual = st.session_state.pool_preguntas[st.session_state.indice]
     

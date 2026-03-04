@@ -6,7 +6,8 @@ import time
 NUM_PREGUNTAS = 10  # Al cambiar este número, se puede aumentar la cantidad de preguntas para jugar, no puede ser mayor a 20
 PUNTOS_POR_PREGUNTA = 2 #Se usa para ajustar cuanto puntos vale cada pregunta
 PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA  #Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
-TIEMPO_ESPERA = 6  #Configuracion de tiempo para que el audio se pueda reproducir completo
+TIEMPO_ESPERA_CORRECTO = 2  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta correcta
+TIEMPO_ESPERA_INCORRECTO = 6  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta incorrecta
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
@@ -103,13 +104,13 @@ if not st.session_state.juego_terminado:
     if seleccion:
         if seleccion == pregunta_actual['c']:
             st.success("¡CORRECTO! 🌟")
-            reproducir_sonido_correcto()   #Audio de victoria
+            reproducir_sonido_correcto()   #Audio de correcto
             st.session_state.puntos += 2
-            time.sleep(TIEMPO_ESPERA) # Pausa dramática
+            time.sleep(TIEMPO_ESPERA_CORRECTO) # Pausa para la reproduccion de audio de repuesta correcta
         else:
             st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
-            reproducir_sonido_incorrecto()  #Audio de derrota
-            time.sleep(TIEMPO_ESPERA)
+            reproducir_sonido_incorrecto()  #Audio de incorrecto
+            time.sleep(TIEMPO_ESPERA_CORRECTO) # Pausa para la reproduccion de audio de repuesta correcta
 
         # Verificamos si aún quedan preguntas por jugar
         if st.session_state.indice < st.session_state.num_preguntas - 1:

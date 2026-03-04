@@ -8,7 +8,7 @@ PUNTOS_POR_PREGUNTA = 2 #Se usa para ajustar cuanto puntos vale cada pregunta
 PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA  #Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
 TIEMPO_ESPERA_CORRECTO = 2  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta correcta
 TIEMPO_ESPERA_INCORRECTO = 6  #Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta incorrecta
-REPRODUCIR_AUDIO_PREGUNTA = true # Activa o desactiva la pista de audio
+REPRODUCIR_AUDIO_PREGUNTA = True # Activa o desactiva la pista de audio
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")

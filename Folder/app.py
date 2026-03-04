@@ -29,14 +29,14 @@ if 'pool_preguntas' not in st.session_state:
         #------Preguntas Nuevas-----
         {"p": "¿Donde se usa un Power MOSFET?", "o": ["Sistemas de alimentación", "Procesadores", "Memorias RAM", "Para reproducir las canciones de Chayanne"], "c": "Sistemas de alimentación"},  #11
         {"p": "¿Un filtro de segundo orden se realiza con:?", "o": ["Profesores dificiles", "Amplificadores Operacionales", "Condensadores", "Bobinas"], "c": "Amplificadores Operacionales"},     #12
-        {"p": "¿Qué componente almacena energía en un campo eléctrico?", "o": ["Bobina", "Resistencia", "Condensador", "Tobo de agua"], "c": "Condensador"},              #13
-        {"p": "¿Qué componente almacena energía en un campo magnético?", "o": ["Bobina", "Condensador", "Alambre pua", "Circuito integrado"], "c": "Bobina"},             #14
-        {"p": "¿Cuál es la ley que relaciona voltaje, corriente y resistencia?", "o": ["Ley de Faraday", "Ley de Ohm", "Ley del hielo ", "Ley de Watt"], "c": "Ley de Ohm"},     #15
+        {"p": "¿Qué componente almacena energía en un campo eléctrico?", "o": ["Bobina", "Resistencia", "Condensador", "Tobo de agua"], "c": "Condensador"},  #13
+        {"p": "¿Qué componente almacena energía en un campo magnético?", "o": ["Bobina", "Condensador", "Alambre pua", "Circuito integrado"], "c": "Bobina"}, #14
+        {"p": "¿Cuál es la ley que relaciona voltaje, corriente y resistencia?", "o": ["Ley de Faraday", "Ley de Ohm", "Ley del hielo ", "Ley de Watt"], "c": "Ley de Ohm"}, #15
         {"p": "¿Qué hace un diodo?", "o": ["Amplifica señales", "Es un componente racista", "Permite corriente en un solo sentido", "Genera oscilaciones"], "c": "Permite corriente en un solo sentido"}, #16
-        {"p": "¿Qué unidad mide la resistencia?", "o": ["Voltios", "Amperios", "Watts", "Ohmios"], "c": "Ohmios"},                                                                                 #17
-        {"p": "¿Qué unidad mide la capacitancia?", "o": ["Henrios", "Faradios", "Ohmios", "Siemens"], "c": "Faradios"},                                                                            #18
-        {"p": "¿Qué componente se usa para amplificar señales?", "o": ["Resistencia", "Condensador", "Transistor", "Bobina"], "c": "Transistor"},                                                  #19
-        {"p": "¿Cuál es el símbolo del transistor NPN?", "o": ["🙂", "🔌", "⚡", "quede minimo común multiplo"], "c": "quede minimo común multiplo"},                                                           #20
+        {"p": "¿Qué unidad mide la resistencia?", "o": ["Voltios", "Amperios", "Watts", "Ohmios"], "c": "Ohmios"},      #17
+        {"p": "¿Qué unidad mide la capacitancia?", "o": ["Henrios", "Faradios", "Ohmios", "Siemens"], "c": "Faradios"}, #18
+        {"p": "¿Qué componente se usa para amplificar señales?", "o": ["Resistencia", "Condensador", "Transistor", "Bobina"], "c": "Transistor"},  #19
+        {"p": "¿Cuál es el símbolo del transistor NPN?", "o": ["🙂", "🔌", "⚡", "quede minimo común multiplo"], "c": "quede minimo común multiplo"}, #20
     ]
     random.shuffle(st.session_state.pool_preguntas)
 
@@ -54,7 +54,7 @@ URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/r
 URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3" #Audio de correcto
 URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3" #Audio de incorrecto
 
-# CSS para ocultar audios (versión simplificada)
+# Parte de codigo para ocultar barra de reproductor de audios 
 st.markdown("""
 <style>
 .stAudio, audio { display: none; }
@@ -63,22 +63,22 @@ st.markdown("""
 # Funciones para reproduccion de audios
 def reproducir_sonido_correcto():
     try:
-        st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)
+        st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)  # hace la llamada del audio correto cuando la respuesta es correcta
     except:
         pass
 
 def reproducir_sonido_incorrecto():
     try:
-        st.audio(URL_INCORRECTO, format="audio/mp3", autoplay=True)
+        st.audio(URL_INCORRECTO, format="audio/mp3", autoplay=True)  # hace la llamada del audio incorreto cuando la respuesta es incorrecta
     except:
         pass
 
 def reproducir_audio_pregunta():
     if REPRODUCIR_AUDIO_PREGUNTA:
-        if st.session_state.audio_pregunta_actual != st.session_state.indice:
+        if st.session_state.audio_pregunta_actual != st.session_state.indice:    # Compara si el audio de la pregunta actual ya se reprodujo
             try:
-                st.audio(URL_AUDIO_PREGUNTA, format="audio/mp3", autoplay=True)
-                st.session_state.audio_pregunta_actual = st.session_state.indice
+                st.audio(URL_AUDIO_PREGUNTA, format="audio/mp3", autoplay=True)  # hace la llamada del audio pregunta cuando sale una nueva pregunta
+                st.session_state.audio_pregunta_actual = st.session_state.indice # Actualiza el estado para marcar que ya sonó en este índice   
             except:
                 pass
 
@@ -98,25 +98,25 @@ if not st.session_state.juego_terminado:
     st.write(f"### {pregunta_actual['p']}")
     
     # --- BOTONES DE RESPUESTA ---
-    opciones = pregunta_actual['o']
+    opciones = pregunta_actual['o']    # Extrae de la pregunta la lista de opciones (A, B, C, D)
     
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2)         # Divide la pantalla en dos columnas iguales
     with col1:
-        btn_a = st.button(f"A) {opciones[0]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
+        btn_a = st.button(f"A) {opciones[0]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)  # Si el usuario respondio, todo los botones se inhabilitan para que no puedan cambiar su respuestas y aumentar la cantidad de puntos 
         btn_b = st.button(f"B) {opciones[1]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
     with col2:
         btn_c = st.button(f"C) {opciones[2]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
         btn_d = st.button(f"D) {opciones[3]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
 
-    # Detectar qué botón se presionó
+    # Detectar qué botón presionó el usuario
     seleccion = None
-    if not st.session_state.respuesta_confirmada:
+    if not st.session_state.respuesta_confirmada: 
         if btn_a: seleccion = opciones[0]
         if btn_b: seleccion = opciones[1]
         if btn_c: seleccion = opciones[2]
         if btn_d: seleccion = opciones[3]
 
-    # Procesar respuesta
+    # Se evalua la respuesta
     if seleccion and not st.session_state.respuesta_confirmada:
         st.session_state.respuesta_confirmada = True
         
@@ -132,16 +132,16 @@ if not st.session_state.juego_terminado:
         
         st.rerun()
     
-    # Mensaje de espera si ya respondió
+    # Mensaje de espera ya cuando el usuario respondio y decide continuar a la siguiente pregunta
     if st.session_state.respuesta_confirmada:
-        st.info("⏳ Respuesta registrada. Prepárate para la siguiente pregunta...")
+        st.info("⏳ Respuesta registrada. Prepárate para la siguiente pregunta....")
         if st.button("Continuar ▶️"):
-            if st.session_state.indice < st.session_state.num_preguntas - 1:
-                st.session_state.indice += 1
-                st.session_state.respuesta_confirmada = False
+            if st.session_state.indice < st.session_state.num_preguntas - 1: # Verifica si quedan preguntas de la lista
+                st.session_state.indice += 1  # Avanza a la siguiente pregunta
+                st.session_state.respuesta_confirmada = False # "Limpia" la interfaz para la nueva pregunta
                 st.rerun()
             else:
-                st.session_state.juego_terminado = True
+                st.session_state.juego_terminado = True # Finaliza el juego
                 st.rerun()
 
 else:

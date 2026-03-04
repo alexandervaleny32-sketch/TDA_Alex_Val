@@ -54,45 +54,7 @@ if 'indice' not in st.session_state:
     
 # --- 3. FUNCIONES DE AUDIO ---
 
-def reproducir_audio_pregunta():
-    """Versión simple con controles ocultos"""
-    if REPRODUCIR_AUDIO_PREGUNTA:
-        try:
-            if 'audio_pregunta_reproducido' not in st.session_state:
-                st.session_state.audio_pregunta_reproducido = False
-            
-            if not st.session_state.audio_pregunta_reproducido:
-                with open("Folder/Pregunta (Quién quiere ser millonario).mp3", "rb") as f:
-                    audio_bytes = f.read()
-                
-                import base64
-                audio_base64 = base64.b64encode(audio_bytes).decode()
-                
-                # Mostrar el audio UNA VEZ con autoplay y oculto
-                st.markdown(
-                    f"""
-                    <audio autoplay style="display: none;" onplay="console.log('Audio reproduciendo')">
-                        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-                    </audio>
-                    <script>
-                        // Forzar reproducción adicional
-                        setTimeout(function() {{
-                            var audio = document.querySelector('audio');
-                            if(audio) audio.play();
-                        }}, 500);
-                    </script>
-                    """,
-                    unsafe_allow_html=True
-                )
-                st.session_state.audio_pregunta_reproducido = True
-                
-        except Exception as e:
-            pass
 
-def reset_audio_pregunta():
-    """Resetea el estado del audio para la siguiente pregunta"""
-    if 'audio_pregunta_reproducido' in st.session_state:
-        st.session_state.audio_pregunta_reproducido = False
 
 def reproducir_sonido_correcto():
     """Reproduce sonido de respuesta correcta"""
@@ -155,8 +117,7 @@ if not st.session_state.juego_terminado:
             time.sleep(TIEMPO_ESPERA_INCORRECTO) # Pausa para la reproduccion de audio de repuesta incorrecta
 
         # Verificamos si aún quedan preguntas por jugar
-        reset_audio_pregunta()
-        
+
         if st.session_state.indice < st.session_state.num_preguntas - 1:
             st.session_state.indice += 1
             st.rerun()

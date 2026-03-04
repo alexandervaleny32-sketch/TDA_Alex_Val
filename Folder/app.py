@@ -55,10 +55,9 @@ if 'indice' not in st.session_state:
 # --- 3. FUNCIONES DE AUDIO ---
 
 def reproducir_audio_pregunta():
-    """Reproduce audio usando técnica anti-bloqueo"""
+    """Versión simple con controles ocultos"""
     if REPRODUCIR_AUDIO_PREGUNTA:
         try:
-            # Verificar si ya se reprodujo en esta pregunta
             if 'audio_pregunta_reproducido' not in st.session_state:
                 st.session_state.audio_pregunta_reproducido = False
             
@@ -69,53 +68,26 @@ def reproducir_audio_pregunta():
                 import base64
                 audio_base64 = base64.b64encode(audio_bytes).decode()
                 
-                # HTML con múltiples estrategias de autoplay
-                audio_html = f"""
-                    <div style="display: none;">
-                        <audio id="audioForzado" preload="auto">
-                            <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-                        </audio>
-                    </div>
+                # Mostrar el audio UNA VEZ con autoplay y oculto
+                st.markdown(
+                    f"""
+                    <audio autoplay style="display: none;" onplay="console.log('Audio reproduciendo')">
+                        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
+                    </audio>
                     <script>
-                        (function() {{
-                            var audio = document.getElementById('audioForzado');
-                            
-                            // Estrategia 1: Intentar reproducir inmediatamente
-                            var playPromise = audio.play();
-                            
-                            if (playPromise !== undefined) {{
-                                playPromise.then(function() {{
-                                    console.log('✅ Audio reproduciéndose automáticamente');
-                                }}).catch(function(error) {{
-                                    console.log('❌ Autoplay bloqueado: ' + error);
-                                    
-                                    // Estrategia 2: Esperar a que el usuario haga clic en cualquier parte
-                                    document.body.addEventListener('click', function() {{
-                                        audio.play();
-                                    }}, {{ once: true }});
-                                    
-                                    // Estrategia 3: Intentar cada segundo por 5 segundos
-                                    var intentos = 0;
-                                    var intervalo = setInterval(function() {{
-                                        audio.play().then(function() {{
-                                            clearInterval(intervalo);
-                                        }}).catch(function() {{
-                                            intentos++;
-                                            if (intentos >= 5) clearInterval(intervalo);
-                                        }});
-                                    }}, 1000);
-                                }});
-                            }}
-                            
-                            audio.volume = 0.7;
-                        }})();
+                        // Forzar reproducción adicional
+                        setTimeout(function() {{
+                            var audio = document.querySelector('audio');
+                            if(audio) audio.play();
+                        }}, 500);
                     </script>
-                """
-                st.markdown(audio_html, unsafe_allow_html=True)
+                    """,
+                    unsafe_allow_html=True
+                )
                 st.session_state.audio_pregunta_reproducido = True
                 
         except Exception as e:
-            st.warning(f"🔊 Audio: {e}")
+            pass
 
 def reset_audio_pregunta():
     """Resetea el estado del audio para la siguiente pregunta"""

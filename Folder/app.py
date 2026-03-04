@@ -55,22 +55,42 @@ if 'indice' not in st.session_state:
 # --- 3. FUNCIONES DE AUDIO ---
 
 def reproducir_audio_pregunta():
-    """Versión de emergencia - ultra simple"""
+    """Versión de diagnóstico"""
     if REPRODUCIR_AUDIO_PREGUNTA:
         try:
-            with open("Folder/Pregunta (Quién quiere ser millonario).mp3", "rb") as f:
-                audio_bytes = f.read()
+            # 1. Mostrar el directorio actual
+            import os
+            st.write("📁 Archivos en Folder:")
+            archivos = os.listdir("Folder")
+            st.write(archivos)
             
-            import base64
-            audio_base64 = base64.b64encode(audio_bytes).decode()
-            
-            # La versión más simple posible
-            st.markdown(
-                f'<audio autoplay><source src="data:audio/mp3;base64,{audio_base64}"></audio>',
-                unsafe_allow_html=True
-            )
-        except:
-            pass
+            # 2. Verificar si el archivo existe
+            nombre_archivo = "Folder/Pregunta (Quién quiere ser millonario).mp3"
+            if os.path.exists(nombre_archivo):
+                st.success(f"✅ Archivo encontrado: {nombre_archivo}")
+                
+                # 3. Mostrar tamaño del archivo
+                tamaño = os.path.getsize(nombre_archivo)
+                st.write(f"📊 Tamaño: {tamaño} bytes")
+                
+                # 4. Intentar reproducir
+                with open(nombre_archivo, "rb") as f:
+                    audio_bytes = f.read()
+                
+                import base64
+                audio_base64 = base64.b64encode(audio_bytes).decode()
+                
+                st.markdown(
+                    f'<audio controls><source src="data:audio/mp3;base64,{audio_base64}"></audio>',
+                    unsafe_allow_html=True
+                )
+                st.write("🔊 Controles de audio mostrados arriba")
+                
+            else:
+                st.error(f"❌ Archivo NO encontrado: {nombre_archivo}")
+                
+        except Exception as e:
+            st.error(f"🔥 Error: {e}")
 
 def reproducir_sonido_correcto():
     """Reproduce sonido de respuesta correcta"""

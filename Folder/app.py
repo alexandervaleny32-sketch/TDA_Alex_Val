@@ -57,6 +57,14 @@ def reproducir_sonido_correcto():
         st.audio("Folder/Respuesta correcta_(PAPI CACHAME).mp3", format="audio/mp3", autoplay=True)
     except:
         pass  # Si falla, que no rompa la app
+
+def reproducir_sonido_incorrecto():
+    """Reproduce sonido de respuesta incorrecta"""
+    try:
+        st.audio("Folder/Incorrecto (Sonido de decepción).mp3", format="audio/mp3", autoplay=True)
+    except:
+        pass  # Si falla, que no rompa la app
+
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
 st.divider()
@@ -99,7 +107,7 @@ if not st.session_state.juego_terminado:
             time.sleep(1) # Pausa dramática
         else:
             st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
-            # reproducir_sonido("URL_DE_SONIDO_ERROR")
+            reproducir_sonido_incorrecto()  #Audio de derrota
             time.sleep(1)
 
         # Verificamos si aún quedan preguntas por jugar

@@ -53,6 +53,13 @@ URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/r
 URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3"
 URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3"
 
+# CSS para ocultar audios (versión simplificada)
+st.markdown("""
+<style>
+.stAudio, audio { display: none; }
+</style>
+""", unsafe_allow_html=True)
+
 def reproducir_sonido_correcto():
     try:
         st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)

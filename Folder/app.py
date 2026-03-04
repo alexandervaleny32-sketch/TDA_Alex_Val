@@ -48,7 +48,7 @@ if 'indice' not in st.session_state:
     st.session_state.respuesta_confirmada = False
     st.session_state.audio_pregunta_actual = -1
 
-# --- 3. FUNCIONES DE AUDIO ---
+# --- 3. FUNCIONES DE AUDIO ----
 URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3"
 URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3"
 URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3"

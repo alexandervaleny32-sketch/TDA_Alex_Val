@@ -54,53 +54,23 @@ if 'indice' not in st.session_state:
     
 # --- 3. FUNCIONES DE AUDIO ---
 
-def reproducir_audio_pregunta():  """Reproduce audio de pregunta automáticamente usando HTML"""
-    
+def reproducir_audio_pregunta():
+    """Versión de emergencia - ultra simple"""
     if REPRODUCIR_AUDIO_PREGUNTA:
         try:
-            # Verificar si ya se reprodujo la pista en la pregunta actual del pool
-            if 'audio_pregunta_reproducido' not in st.session_state:
-                st.session_state.audio_pregunta_reproducido = False
+            with open("Folder/Pregunta (Quién quiere ser millonario).mp3", "rb") as f:
+                audio_bytes = f.read()
             
-            if not st.session_state.audio_pregunta_reproducido:
-                # Leer y codificar el archivo
-                with open("Folder/Pregunta (Quién quiere ser millonario).mp3", "rb") as f:
-                    audio_bytes = f.read()
-                
-                import base64
-                audio_base64 = base64.b64encode(audio_bytes).decode()
-                
-                # HTML con autoplay forzado - ESPECÍFICO PARA TU ARCHIVO
-                audio_html = f"""
-                    <audio id="audio-pregunta-millonario" autoplay>
-                        <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-                        Tu navegador no soporta el elemento de audio.
-                    </audio>
-                    <script>
-                        (function() {{
-                            // Intentar reproducir el audio múltiples veces
-                            var audio = document.getElementById('audio-pregunta-millonario');
-                            
-                            function intentarReproducir() {{
-                                audio.play()
-                                    .then(() => console.log('🎵 Audio reproduciéndose: Pregunta millonario'))
-                                    .catch(error => {{
-                                        console.log('Esperando interacción del usuario...');
-                                        // Esperar 1 segundo y reintentar
-                                        setTimeout(intentarReproducir, 1000);
-                                    }});
-                            }}
-                            
-                            intentarReproducir();
-                            audio.volume = 1;  // Volumen al 80%
-                        }})();
-                    </script>
-                """
-                st.markdown(audio_html, unsafe_allow_html=True)
-                st.session_state.audio_pregunta_reproducido = True
-                
-        except Exception as e:
-            st.warning(f"🎵 Audio no disponible: {e}")
+            import base64
+            audio_base64 = base64.b64encode(audio_bytes).decode()
+            
+            # La versión más simple posible
+            st.markdown(
+                f'<audio autoplay><source src="data:audio/mp3;base64,{audio_base64}"></audio>',
+                unsafe_allow_html=True
+            )
+        except:
+            pass
 
 def reproducir_sonido_correcto():
     """Reproduce sonido de respuesta correcta"""

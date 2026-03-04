@@ -3,12 +3,12 @@ import random
 import time
 
 # ===== CONFIGURACIÓN DEL JUEGO =====
-NUM_PREGUNTAS = 10
-PUNTOS_POR_PREGUNTA = 2
-PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA
-TIEMPO_ESPERA_CORRECTO = 2
-TIEMPO_ESPERA_INCORRECTO = 6
-REPRODUCIR_AUDIO_PREGUNTA = True
+NUM_PREGUNTAS = 10 # Al cambiar este número, se puede aumentar la cantidad de preguntas para jugar, no puede ser mayor a 20
+PUNTOS_POR_PREGUNTA = 2 # Se usa para ajustar cuanto puntos vale cada pregunta
+PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA # Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
+TIEMPO_ESPERA_CORRECTO = 2 # Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta correcta
+TIEMPO_ESPERA_INCORRECTO = 6  # Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta incorrecta
+REPRODUCIR_AUDIO_PREGUNTA = True # Activa o desactiva la pista de audio
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
 st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
@@ -16,26 +16,27 @@ st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
 # --- 1. BASE DE DATOS (20 preguntas) ---
 if 'pool_preguntas' not in st.session_state:
     st.session_state.pool_preguntas = [
-        {"p": "¿Cuál es la capital de Venezuela?", "o": ["Maracaibo", "Caracas", "Valencia", "Coro"], "c": "Caracas"},
-        {"p": "¿Qué planeta es conocido como el Planeta Rojo?", "o": ["Venus", "Marte", "Júpiter", "Saturno"], "c": "Marte"},
-        {"p": "¿Cuántos bits tiene un byte?", "o": ["4", "16", "32", "8"], "c": "8"},
-        {"p": "¿Quién pintó la Mona Lisa?", "o": ["Dali", "Picasso", "Da Vinci", "Van Gogh"], "c": "Da Vinci"},
-        {"p": "¿Cuál es el metal más caro del mundo?", "o": ["Oro", "Platino", "Rodio", "Cobre"], "c": "Rodio"},
-        {"p": "¿Qué animal es la mascota de Linux?", "o": ["Gato", "Pingüino", "Perro", "Elefante"], "c": "Pingüino"},
-        {"p": "¿En qué año llegó el hombre a la Luna?", "o": ["1965", "1972", "1969", "1980"], "c": "1969"},
-        {"p": "¿Cuál es el río más largo del mundo?", "o": ["Amazonas", "Nilo", "Orinoco", "Misisipi"], "c": "Amazonas"},
-        {"p": "¿Qué elemento químico tiene el símbolo 'O'?", "o": ["Oro", "Osmio", "Oxígeno", "Hierro"], "c": "Oxígeno"},
-        {"p": "¿Cuál es el lenguaje de programación de esta App?", "o": ["Java", "C++", "Python", "PHP"], "c": "Python"},
-        {"p": "¿Donde se usa un Power MOSFET?", "o": ["Sistemas de alimentación", "Procesadores", "Memorias RAM", "Para reproducir las canciones de Chayanne"], "c": "Sistemas de alimentación"},
-        {"p": "¿Un filtro de segundo orden se realiza con:?", "o": ["Profesores dificiles", "Amplificadores Operacionales", "Condensadores", "Bobinas"], "c": "Amplificadores Operacionales"},
-        {"p": "¿Qué componente almacena energía en un campo eléctrico?", "o": ["Bobina", "Resistencia", "Condensador", "Tobo de agua"], "c": "Condensador"},
-        {"p": "¿Qué componente almacena energía en un campo magnético?", "o": ["Bobina", "Condensador", "Alambre pua", "Circuito integrado"], "c": "Bobina"},
-        {"p": "¿Cuál es la ley que relaciona voltaje, corriente y resistencia?", "o": ["Ley de Faraday", "Ley de Ohm", "Ley del hielo ", "Ley de Watt"], "c": "Ley de Ohm"},
-        {"p": "¿Qué hace un diodo?", "o": ["Amplifica señales", "Es un componente racista", "Permite corriente en un solo sentido", "Genera oscilaciones"], "c": "Permite corriente en un solo sentido"},
-        {"p": "¿Qué unidad mide la resistencia?", "o": ["Voltios", "Amperios", "Watts", "Ohmios"], "c": "Ohmios"},
-        {"p": "¿Qué unidad mide la capacitancia?", "o": ["Henrios", "Faradios", "Ohmios", "Siemens"], "c": "Faradios"},
-        {"p": "¿Qué componente se usa para amplificar señales?", "o": ["Resistencia", "Condensador", "Transistor", "Bobina"], "c": "Transistor"},
-        {"p": "¿Cuál es el símbolo del transistor NPN?", "o": ["🙂", "🔌", "⚡", "quede minimo común multiplo"], "c": "quede minimo común multiplo"},
+{"p": "¿Cuál es la capital de Venezuela?", "o": ["Maracaibo", "Caracas", "Valencia", "Coro"], "c": "Caracas"},                 #01
+        {"p": "¿Qué planeta es conocido como el Planeta Rojo?", "o": ["Venus", "Marte", "Júpiter", "Saturno"], "c": "Marte"},  #02
+        {"p": "¿Cuántos bits tiene un byte?", "o": ["4", "16", "32", "8"], "c": "8"},                                          #03
+        {"p": "¿Quién pintó la Mona Lisa?", "o": ["Dali", "Picasso", "Da Vinci", "Van Gogh"], "c": "Da Vinci"},                #04
+        {"p": "¿Cuál es el metal más caro del mundo?", "o": ["Oro", "Platino", "Rodio", "Cobre"], "c": "Rodio"},               #05
+        {"p": "¿Qué animal es la mascota de Linux?", "o": ["Gato", "Pingüino", "Perro", "Elefante"], "c": "Pingüino"},         #06
+        {"p": "¿En qué año llegó el hombre a la Luna?", "o": ["1965", "1972", "1969", "1980"], "c": "1969"},                   #07
+        {"p": "¿Cuál es el río más largo del mundo?", "o": ["Amazonas", "Nilo", "Orinoco", "Misisipi"], "c": "Amazonas"},      #08
+        {"p": "¿Qué elemento químico tiene el símbolo 'O'?", "o": ["Oro", "Osmio", "Oxígeno", "Hierro"], "c": "Oxígeno"},      #09
+        {"p": "¿Cuál es el lenguaje de programación de esta App?", "o": ["Java", "C++", "Python", "PHP"], "c": "Python"},      #10
+        #------Preguntas Nuevas-----
+        {"p": "¿Donde se usa un Power MOSFET?", "o": ["Sistemas de alimentación", "Procesadores", "Memorias RAM", "Para reproducir las canciones de Chayanne"], "c": "Sistemas de alimentación"},  #11
+        {"p": "¿Un filtro de segundo orden se realiza con:?", "o": ["Profesores dificiles", "Amplificadores Operacionales", "Condensadores", "Bobinas"], "c": "Amplificadores Operacionales"},     #12
+        {"p": "¿Qué componente almacena energía en un campo eléctrico?", "o": ["Bobina", "Resistencia", "Condensador", "Tobo de agua"], "c": "Condensador"},              #13
+        {"p": "¿Qué componente almacena energía en un campo magnético?", "o": ["Bobina", "Condensador", "Alambre pua", "Circuito integrado"], "c": "Bobina"},             #14
+        {"p": "¿Cuál es la ley que relaciona voltaje, corriente y resistencia?", "o": ["Ley de Faraday", "Ley de Ohm", "Ley del hielo ", "Ley de Watt"], "c": "Ley de Ohm"},     #15
+        {"p": "¿Qué hace un diodo?", "o": ["Amplifica señales", "Es un componente racista", "Permite corriente en un solo sentido", "Genera oscilaciones"], "c": "Permite corriente en un solo sentido"}, #16
+        {"p": "¿Qué unidad mide la resistencia?", "o": ["Voltios", "Amperios", "Watts", "Ohmios"], "c": "Ohmios"},                                                                                 #17
+        {"p": "¿Qué unidad mide la capacitancia?", "o": ["Henrios", "Faradios", "Ohmios", "Siemens"], "c": "Faradios"},                                                                            #18
+        {"p": "¿Qué componente se usa para amplificar señales?", "o": ["Resistencia", "Condensador", "Transistor", "Bobina"], "c": "Transistor"},                                                  #19
+        {"p": "¿Cuál es el símbolo del transistor NPN?", "o": ["🙂", "🔌", "⚡", "quede minimo común multiplo"], "c": "quede minimo común multiplo"},                                                           #20
     ]
     random.shuffle(st.session_state.pool_preguntas)
 
@@ -49,9 +50,9 @@ if 'indice' not in st.session_state:
     st.session_state.audio_pregunta_actual = -1
 
 # --- 3. FUNCIONES DE AUDIO ----
-URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3"
-URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3"
-URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3"
+URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3" #Audio de pregunta
+URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3" #Audio de correcto
+URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3" #Audio de incorrecto
 
 # CSS para ocultar audios (versión simplificada)
 st.markdown("""
@@ -59,7 +60,7 @@ st.markdown("""
 .stAudio, audio { display: none; }
 </style>
 """, unsafe_allow_html=True)
-
+# Funciones para reproduccion de audios
 def reproducir_sonido_correcto():
     try:
         st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)
@@ -154,7 +155,7 @@ else:
     else:
         st.warning("Sigue estudiando, la norma ISDB-Tb y ley de Ohm te espera.")
     
-    if st.button("Reintentar"):
+    if st.button("🔄 Reintentar"):
         st.session_state.indice = 0
         st.session_state.puntos = 0
         st.session_state.juego_terminado = False

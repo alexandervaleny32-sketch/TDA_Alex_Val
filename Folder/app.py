@@ -86,22 +86,10 @@ if "audio_fondo_placeholder" not in st.session_state:
 # Parte de codigo para ocultar barra de reproductor de audios 
 st.markdown("""
 <style>
-audio {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0px !important;
-    width: 0px !important;
-    opacity: 0 !important;
-}
-.stAudio {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0px !important;
-    width: 0px !important;
-    opacity: 0 !important;
-}
+.stAudio, audio { display: none; }
 </style>
 """, unsafe_allow_html=True)
+
 
 # Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():

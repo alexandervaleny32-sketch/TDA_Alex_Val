@@ -98,22 +98,7 @@ def reproducir_audio_fondo():
     if st.session_state.pantalla_actual in pantallas_con_audio:
         st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
-# --- Controlador de audio de fondo con delay en el menú ---
-def reproducir_audio_fondo_con_delay():
-    # Solo queremos este comportamiento en el MENÚ
-    if st.session_state.pantalla_actual == "menu":
-        # Si es la primera vez que entramos al menú, guardamos el tiempo actual
-        if "audio_delay" not in st.session_state:
-            st.session_state.audio_delay = time.time()
-
-        # Calculamos cuánto tiempo ha pasado desde que entramos al menú
-        tiempo_transcurrido = time.time() - st.session_state.audio_delay
-
-        # Si ya pasó al menos 1 segundo, reproducimos el audio
-        if tiempo_transcurrido >= 1:
-            st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
-
-# reproducir_audio_fondo()
+reproducir_audio_fondo()
 
 # Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():

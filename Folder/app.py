@@ -250,9 +250,9 @@ if st.session_state.pantalla_actual == "participar":
                 st.session_state.num_preguntas = num
                 st.session_state.puntuacion_maxima_real = num * PUNTOS_POR_PREGUNTA
     
-                # Ir a pantalla de pre-juego
-                st.session_state.pantalla_actual = "pre_juego"
-                st.session_state.pre_juego_inicio = time.time()
+                # Detener música de fondo al iniciar el juego
+ 
+                st.session_state.pantalla_actual = "juego"
                 st.rerun()
 
 
@@ -290,31 +290,6 @@ if st.session_state.pantalla_actual == "ranking":
 
     st.stop()
 
-# ============================
-#      PANTALLA PRE-JUEGO
-# ============================
-if st.session_state.pantalla_actual == "pre_juego":
-
-    # Tiempo transcurrido desde que entró a esta pantalla
-    transcurrido = int(time.time() - st.session_state.pre_juego_inicio)
-    restante = 5 - transcurrido
-
-    # Reproducir audio de fondo (oculto por CSS)
-    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
-
-    st.header("⏳ Preparando el juego...")
-    st.subheader(f"Comenzamos en: **{restante}** segundos")
-
-    # Si ya terminó el conteo → entrar al juego
-    if restante <= 0:
-        st.session_state.pantalla_actual = "juego"
-        st.rerun()
-
-    # Esperar 1 segundo y refrescar pantalla
-    time.sleep(1)
-    st.experimental_rerun()
-
-    st.stop()   # ← ESTE ERA EL QUE FALTABA
 
 
 
@@ -411,4 +386,3 @@ if st.session_state.pantalla_actual == "juego" and st.session_state.juego_termin
         st.session_state.nombre_jugador = ""
         random.shuffle(st.session_state.pool_preguntas)
         st.rerun()
-

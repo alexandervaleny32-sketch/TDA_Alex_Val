@@ -97,7 +97,23 @@ def reproducir_audio_fondo():
 
     if st.session_state.pantalla_actual in pantallas_con_audio:
         st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
-reproducir_audio_fondo()
+
+# --- Controlador de audio de fondo con delay en el menú ---
+def reproducir_audio_fondo_con_delay():
+    # Solo queremos este comportamiento en el MENÚ
+    if st.session_state.pantalla_actual == "menu":
+        # Si es la primera vez que entramos al menú, guardamos el tiempo actual
+        if "audio_delay" not in st.session_state:
+            st.session_state.audio_delay = time.time()
+
+        # Calculamos cuánto tiempo ha pasado desde que entramos al menú
+        tiempo_transcurrido = time.time() - st.session_state.audio_delay
+
+        # Si ya pasó al menos 1 segundo, reproducimos el audio
+        if tiempo_transcurrido >= 1:
+            st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+
+# reproducir_audio_fondo()
 
 # Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():
@@ -208,6 +224,7 @@ st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_pre
 # ============================
 if st.session_state.pantalla_actual == "menu":
 
+    reproducir_audio_fondo_con_delay()
     # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
     st.header("🎉 Bienvenido a Trivia Ultra-Master IUT")
@@ -235,6 +252,8 @@ if st.session_state.pantalla_actual == "menu":
 if st.session_state.pantalla_actual == "participar":
 
     # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+    if "audio_delay" in st.session_state:
+        del st.session_state.audio_delay
     
     st.header("📝 Configuración del Jugador")
 
@@ -272,7 +291,9 @@ if st.session_state.pantalla_actual == "participar":
 if st.session_state.pantalla_actual == "ranking":
 
     # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
-    
+    if "audio_delay" in st.session_state:
+        del st.session_state.audio_delay
+        
     st.header("📊 Ranking de Jugadores")
 
     ranking = cargar_ranking()
@@ -306,7 +327,9 @@ if st.session_state.pantalla_actual == "ranking":
 if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_terminado:
 
 
-
+    if "audio_delay" in st.session_state:
+        del st.session_state.audio_delay
+        
     reproducir_audio_pregunta()
 
     pregunta_actual = st.session_state.pool_preguntas[st.session_state.indice]
@@ -363,7 +386,8 @@ if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_te
 # ============================
 if st.session_state.pantalla_actual == "juego" and st.session_state.juego_terminado:
 
-
+    if "audio_delay" in st.session_state:
+        del st.session_state.audio_delay
 
     st.header("🏁 ¡Fin del Juego!")
     st.write(f"👤 Jugador: **{st.session_state.nombre_jugador}**")

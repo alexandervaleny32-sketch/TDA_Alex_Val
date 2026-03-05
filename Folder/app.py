@@ -209,7 +209,6 @@ st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_pre
 # ============================
 if st.session_state.pantalla_actual == "menu":
 
-    reproducir_audio_fondo_con_delay()
     # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
     st.header("🎉 Bienvenido a Trivia Ultra-Master IUT")

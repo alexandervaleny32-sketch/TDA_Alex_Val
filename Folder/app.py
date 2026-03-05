@@ -3,9 +3,9 @@ import random
 import time
 
 # ===== CONFIGURACIÓN DEL JUEGO =====
-NUM_PREGUNTAS = 10 # Al cambiar este número, se puede aumentar la cantidad de preguntas para jugar, no puede ser mayor a 20
+# NUM_PREGUNTAS = 10 # Al cambiar este número, se puede aumentar la cantidad de preguntas para jugar, no puede ser mayor a 20
 PUNTOS_POR_PREGUNTA = 2 # Se usa para ajustar cuanto puntos vale cada pregunta
-PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA # Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
+# PUNTUACION_MAXIMA = NUM_PREGUNTAS * PUNTOS_POR_PREGUNTA # Resultado que da el valor total de la puntuacion maxima y se puede comparar con la cantidad de puntos recolectadas
 TIEMPO_ESPERA_CORRECTO = 2 # Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta correcta
 TIEMPO_ESPERA_INCORRECTO = 6  # Configuracion de tiempo para que el audio se pueda reproducir completo de respuesta incorrecta
 REPRODUCIR_AUDIO_PREGUNTA = True # Activa o desactiva la pista de audio
@@ -45,11 +45,15 @@ if 'indice' not in st.session_state:
     st.session_state.indice = 0
     st.session_state.puntos = 0
     st.session_state.juego_terminado = False
-    st.session_state.num_preguntas = NUM_PREGUNTAS
+    st.session_state.num_preguntas = None
     st.session_state.respuesta_confirmada = False
     st.session_state.audio_pregunta_actual = -1
+    
+# --- 2.1. Control de interfaces ---
+if 'pantalla_actual' not in st.session_state:
+    st.session_state.pantalla_actual = "menu"   # menu | participar | ranking | juego
 
-# --- 2.1. Datos del jugador ---
+# --- 2.2. Datos del jugador ---
 if 'nombre_jugador' not in st.session_state:
     st.session_state.nombre_jugador = ""
 
@@ -119,65 +123,116 @@ def reproducir_audio_final(puntos, maximo):
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
 st.divider()
-st.progress(st.session_state.indice / st.session_state.num_preguntas)
+
+if st.session_state.num_preguntas:
+    st.progress(st.session_state.indice / st.session_state.num_preguntas)
+else:
+    st.progress(0)
+
 st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
-# --- PANTALLA DE CONFIGURACIÓN INICIAL ---
-if not st.session_state.configuracion_completa:
 
-    st.header("🎮 Configuración del Juego")
+# ============================
+#       MENÚ PRINCIPAL
+# ============================
+if st.session_state.pantalla_actual == "menu":
 
-    # Nombre del jugador
-    st.session_state.nombre_jugador = st.text_input("Ingresa tu nombre:")
+    st.header("🎉 Bienvenido a Trivia Ultra-Master IUT")
+    st.write("Selecciona una opción para continuar:")
 
-    # Número de preguntas
-    num = st.number_input("Número de preguntas (1 a 20):", min_value=1, max_value=20, step=1)
+    col1, col2 = st.columns(2)
 
-    # Validación
-    if st.button("Aceptar configuración"):
-        if st.session_state.nombre_jugador.strip() == "":
-            st.error("Debes ingresar un nombre válido.")
-        else:
-            st.session_state.num_preguntas = num
-            st.session_state.puntuacion_maxima_real = st.session_state.num_preguntas * PUNTOS_POR_PREGUNTA
-            st.session_state.configuracion_completa = True
+    with col1:
+        if st.button("🎮 Participar"):
+            st.session_state.pantalla_actual = "participar"
             st.rerun()
 
-    st.stop()  # Detiene la ejecución hasta que se configure todo
+    with col2:
+        if st.button("📊 Ver Ranking"):
+            st.session_state.pantalla_actual = "ranking"
+            st.rerun()
+
+    st.stop()
 
 
-if not st.session_state.juego_terminado:
-    # Reproducir audio de pregunta
+# ============================
+#   PANTALLA DE PARTICIPACIÓN
+# ============================
+if st.session_state.pantalla_actual == "participar":
+
+    st.header("📝 Configuración del Jugador")
+
+    st.session_state.nombre_jugador = st.text_input("Ingresa tu nombre:")
+
+    num = st.number_input("Número de preguntas (1 a 20):", min_value=1, max_value=20, step=1)
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("⬅️ Volver al menú"):
+            st.session_state.pantalla_actual = "menu"
+            st.rerun()
+
+    with col2:
+        if st.button("Aceptar"):
+            if st.session_state.nombre_jugador.strip() == "":
+                st.error("Debes ingresar un nombre válido.")
+            else:
+                st.session_state.num_preguntas = num
+                st.session_state.puntuacion_maxima_real = num * PUNTOS_POR_PREGUNTA
+                st.session_state.pantalla_actual = "juego"
+                st.rerun()
+
+    st.stop()
+
+
+# ============================
+#      PANTALLA DE RANKING
+# ============================
+if st.session_state.pantalla_actual == "ranking":
+
+    st.header("📊 Ranking de Jugadores")
+    st.write("Aquí se mostrará el ranking.")
+
+    if st.button("⬅️ Volver al menú"):
+        st.session_state.pantalla_actual = "menu"
+        st.rerun()
+
+    st.stop()
+
+
+# ============================
+#           JUEGO
+# ============================
+if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_terminado:
+
     reproducir_audio_pregunta()
-    
+
     pregunta_actual = st.session_state.pool_preguntas[st.session_state.indice]
-    
+
     st.subheader(f"Pregunta {st.session_state.indice + 1}:")
     st.write(f"### {pregunta_actual['p']}")
-    
-    # --- BOTONES DE RESPUESTA ---
-    opciones = pregunta_actual['o']    # Extrae de la pregunta la lista de opciones (A, B, C, D)
-    
-    col1, col2 = st.columns(2)         # Divide la pantalla en dos columnas iguales
+
+    opciones = pregunta_actual['o']
+
+    col1, col2 = st.columns(2)
     with col1:
-        btn_a = st.button(f"A) {opciones[0]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)  # Si el usuario respondio, todo los botones se inhabilitan para que no puedan cambiar su respuestas y aumentar la cantidad de puntos 
+        btn_a = st.button(f"A) {opciones[0]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
         btn_b = st.button(f"B) {opciones[1]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
     with col2:
         btn_c = st.button(f"C) {opciones[2]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
         btn_d = st.button(f"D) {opciones[3]}", use_container_width=True, disabled=st.session_state.respuesta_confirmada)
 
-    # Detectar qué botón presionó el usuario
     seleccion = None
-    if not st.session_state.respuesta_confirmada: 
+    if not st.session_state.respuesta_confirmada:
         if btn_a: seleccion = opciones[0]
         if btn_b: seleccion = opciones[1]
         if btn_c: seleccion = opciones[2]
         if btn_d: seleccion = opciones[3]
 
-    # Se evalua la respuesta
     if seleccion and not st.session_state.respuesta_confirmada:
         st.session_state.respuesta_confirmada = True
-        
+
         if seleccion == pregunta_actual['c']:
             st.success("¡CORRECTO! 🌟")
             reproducir_sonido_correcto()
@@ -187,43 +242,40 @@ if not st.session_state.juego_terminado:
             st.error(f"INCORRECTO. La respuesta era: {pregunta_actual['c']} ❌")
             reproducir_sonido_incorrecto()
             time.sleep(TIEMPO_ESPERA_INCORRECTO)
-        
+
         st.rerun()
-    
-    # Mensaje de espera ya cuando el usuario respondio y decide continuar a la siguiente pregunta
+
     if st.session_state.respuesta_confirmada:
         st.info("⏳ Respuesta registrada. Prepárate para la siguiente pregunta....")
         if st.button("Continuar ▶️"):
-            if st.session_state.indice < st.session_state.num_preguntas - 1: # Verifica si quedan preguntas de la lista
-                st.session_state.indice += 1  # Avanza a la siguiente pregunta
-                st.session_state.respuesta_confirmada = False # "Limpia" la interfaz para la nueva pregunta
+            if st.session_state.indice < st.session_state.num_preguntas - 1:
+                st.session_state.indice += 1
+                st.session_state.respuesta_confirmada = False
                 st.rerun()
             else:
-                st.session_state.juego_terminado = True # Finaliza el juego
+                st.session_state.juego_terminado = True
                 st.rerun()
 
-else:
-    # PANTALLA FINAL
+
+# ============================
+#        PANTALLA FINAL
+# ============================
+if st.session_state.pantalla_actual == "juego" and st.session_state.juego_terminado:
+
     st.header("🏁 ¡Fin del Juego!")
     st.write(f"👤 Jugador: **{st.session_state.nombre_jugador}**")
     st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {st.session_state.puntuacion_maxima_real}")
-    resultado_audio = reproducir_audio_final(st.session_state.puntos, st.session_state.puntuacion_maxima_real)  #reproduce el audio segun la puntuacion
+
+    resultado_audio = reproducir_audio_final(st.session_state.puntos, st.session_state.puntuacion_maxima_real)
     st.subheader(resultado_audio)
 
-    
-    if st.session_state.puntos >= PUNTUACION_MAXIMA * 0.8:
-        st.balloons()
-        st.success("¡Eres un experto! Ya puedes trabajar en la cabecera de la TDA y eres conocedor de la Electrónica.")
-    else:
-        st.warning("Sigue estudiando, la norma ISDB-Tb y ley de Ohm te espera.")
-    
     if st.button("🔄 Reintentar"):
         st.session_state.indice = 0
         st.session_state.puntos = 0
         st.session_state.juego_terminado = False
         st.session_state.respuesta_confirmada = False
         st.session_state.audio_pregunta_actual = -1
-        st.session_state.configuracion_completa = False
+        st.session_state.pantalla_actual = "menu"
         st.session_state.nombre_jugador = ""
         random.shuffle(st.session_state.pool_preguntas)
         st.rerun()

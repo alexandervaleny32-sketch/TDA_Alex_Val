@@ -295,22 +295,27 @@ if st.session_state.pantalla_actual == "ranking":
 # ============================
 if st.session_state.pantalla_actual == "pre_juego":
 
-    # Tiempo transcurrido
+    # Tiempo transcurrido desde que entró a esta pantalla
     transcurrido = int(time.time() - st.session_state.pre_juego_inicio)
     restante = 5 - transcurrido
 
-    # Reproducir audio de fondo con volumen reducido
-    # (truco: usamos un archivo con volumen normal, pero lo reproducimos varias veces con CSS oculto)
+    # Simulación de fade-out:
+    # Reproducimos el audio de fondo cada segundo.
+    # Como el navegador detecta repetición + oculto, reduce volumen automáticamente.
     st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
     st.header("⏳ Preparando el juego...")
     st.subheader(f"Comenzamos en: **{restante}** segundos")
 
+    # Cuando llegue a 0 → entrar al juego
     if restante <= 0:
         st.session_state.pantalla_actual = "juego"
         st.rerun()
 
-    st.stop()
+    # Esperar 1 segundo y refrescar pantalla
+    time.sleep(1)
+    st.experimental_rerun()
+
 
 
 

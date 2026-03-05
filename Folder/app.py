@@ -250,9 +250,9 @@ if st.session_state.pantalla_actual == "participar":
                 st.session_state.num_preguntas = num
                 st.session_state.puntuacion_maxima_real = num * PUNTOS_POR_PREGUNTA
     
-                # Detener música de fondo al iniciar el juego
- 
-                st.session_state.pantalla_actual = "juego"
+                # Ir a pantalla de pre-juego
+                st.session_state.pantalla_actual = "pre_juego"
+                st.session_state.pre_juego_inicio = time.time()
                 st.rerun()
 
 
@@ -290,6 +290,27 @@ if st.session_state.pantalla_actual == "ranking":
 
     st.stop()
 
+# ============================
+#      PANTALLA PRE-JUEGO
+# ============================
+if st.session_state.pantalla_actual == "pre_juego":
+
+    # Tiempo transcurrido
+    transcurrido = int(time.time() - st.session_state.pre_juego_inicio)
+    restante = 5 - transcurrido
+
+    # Reproducir audio de fondo con volumen reducido
+    # (truco: usamos un archivo con volumen normal, pero lo reproducimos varias veces con CSS oculto)
+    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+
+    st.header("⏳ Preparando el juego...")
+    st.subheader(f"Comenzamos en: **{restante}** segundos")
+
+    if restante <= 0:
+        st.session_state.pantalla_actual = "juego"
+        st.rerun()
+
+    st.stop()
 
 
 

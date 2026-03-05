@@ -72,6 +72,17 @@ URL_PUNTUACION_PATETICA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_
 URL_PUNTUACION_BAJA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20Baja.mp3"
 URL_PUNTUACION_ALTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20alta.mp3"
 URL_PUNTUACION_SUPREMA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20Suprema.mp3"
+
+# --- 3.4. Audio de fondo del menú ---
+URL_AUDIO_FONDO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Tema%20de%20fondo%20(Quien%20Quiere%20Ser%20Millonario).mp3"
+
+if "audio_fondo_activo" not in st.session_state:
+    st.session_state.audio_fondo_activo = False
+
+if "audio_fondo_placeholder" not in st.session_state:
+    st.session_state.audio_fondo_placeholder = st.empty()
+
+
 # Parte de codigo para ocultar barra de reproductor de audios 
 st.markdown("""
 <style>
@@ -170,6 +181,17 @@ def registrar_jugador(nombre, ip, puntos, preguntas_totales, preguntas_correctas
 
     guardar_ranking(ranking)
 
+def reproducir_audio_fondo():
+    if not st.session_state.audio_fondo_activo:
+        return
+
+    # Reproductor oculto para el tema de fondo
+    st.session_state.audio_fondo_placeholder.audio(
+        URL_AUDIO_FONDO,
+        format="audio/mp3",
+        autoplay=True
+    )
+
 
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
@@ -187,6 +209,9 @@ st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_pre
 #       MENÚ PRINCIPAL
 # ============================
 if st.session_state.pantalla_actual == "menu":
+
+    st.session_state.audio_fondo_activo = True
+    reproducir_audio_fondo()
 
     st.header("🎉 Bienvenido a Trivia Ultra-Master IUT")
     st.write("Selecciona una opción para continuar:")
@@ -206,11 +231,15 @@ if st.session_state.pantalla_actual == "menu":
     st.stop()
 
 
+
 # ============================
 #   PANTALLA DE PARTICIPACIÓN
 # ============================
 if st.session_state.pantalla_actual == "participar":
 
+    st.session_state.audio_fondo_activo = True
+    reproducir_audio_fondo()
+    
     st.header("📝 Configuración del Jugador")
 
     st.session_state.nombre_jugador = st.text_input("Ingresa tu nombre:")
@@ -231,8 +260,14 @@ if st.session_state.pantalla_actual == "participar":
             else:
                 st.session_state.num_preguntas = num
                 st.session_state.puntuacion_maxima_real = num * PUNTOS_POR_PREGUNTA
+    
+                # Detener música de fondo al iniciar el juego
+                st.session_state.audio_fondo_activo = False
+                st.session_state.audio_fondo_placeholder.empty()
+    
                 st.session_state.pantalla_actual = "juego"
                 st.rerun()
+
 
     st.stop()
 
@@ -242,6 +277,9 @@ if st.session_state.pantalla_actual == "participar":
 # ============================
 if st.session_state.pantalla_actual == "ranking":
 
+    st.session_state.audio_fondo_activo = True
+    reproducir_audio_fondo()
+    
     st.header("📊 Ranking de Jugadores")
 
     ranking = cargar_ranking()
@@ -273,6 +311,9 @@ if st.session_state.pantalla_actual == "ranking":
 #           JUEGO
 # ============================
 if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_terminado:
+
+    st.session_state.audio_fondo_activo = False
+    st.session_state.audio_fondo_placeholder.empty()
 
     reproducir_audio_pregunta()
 
@@ -329,6 +370,9 @@ if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_te
 #        PANTALLA FINAL
 # ============================
 if st.session_state.pantalla_actual == "juego" and st.session_state.juego_terminado:
+
+    st.session_state.audio_fondo_activo = False
+    st.session_state.audio_fondo_placeholder.empty()
 
     st.header("🏁 ¡Fin del Juego!")
     st.write(f"👤 Jugador: **{st.session_state.nombre_jugador}**")

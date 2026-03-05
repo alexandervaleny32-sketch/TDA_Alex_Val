@@ -90,8 +90,14 @@ URL_PUNTUACION_SUPREMA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_V
 # --- 3.4. Audio de fondo del menú ---
 URL_AUDIO_FONDO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Tema%20de%20fondo%20(Quien%20Quiere%20Ser%20Millonario).mp3"
 
-# Reproducir audio de fondo siempre que se cargue la app
-st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+# --- Controlador de audio de fondo ---
+def reproducir_audio_fondo():
+    # Pantallas donde SÍ debe sonar
+    pantallas_con_audio = ["menu", "participar", "ranking"]
+
+    if st.session_state.pantalla_actual in pantallas_con_audio:
+        st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+reproducir_audio_fondo()
 
 # Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():
@@ -202,7 +208,7 @@ st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_pre
 # ============================
 if st.session_state.pantalla_actual == "menu":
 
-    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+    # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
     st.header("🎉 Bienvenido a Trivia Ultra-Master IUT")
     st.write("Selecciona una opción para continuar:")
@@ -228,7 +234,7 @@ if st.session_state.pantalla_actual == "menu":
 # ============================
 if st.session_state.pantalla_actual == "participar":
 
-    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+    # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
     
     st.header("📝 Configuración del Jugador")
 
@@ -265,7 +271,7 @@ if st.session_state.pantalla_actual == "participar":
 # ============================
 if st.session_state.pantalla_actual == "ranking":
 
-    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+    # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
     
     st.header("📊 Ranking de Jugadores")
 

@@ -90,7 +90,8 @@ URL_PUNTUACION_SUPREMA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_V
 # --- 3.4. Audio de fondo del menú ---
 URL_AUDIO_FONDO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Tema%20de%20fondo%20(Quien%20Quiere%20Ser%20Millonario).mp3"
 
-
+# Reproducir audio de fondo siempre que se cargue la app
+st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
 # Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():

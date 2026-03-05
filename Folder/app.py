@@ -119,6 +119,57 @@ def reproducir_audio_final(puntos, maximo):
         st.audio(URL_PUNTUACION_SUPREMA, format="audio/mp3", autoplay=True)
         return "👑 Puntuación Suprema: Nada que decir Master"
 
+# --- 3.3. FUNCIONES PARA RANKING ---
+import json
+import os
+import socket
+
+RANKING_FILE = "ranking.json"
+
+def obtener_ip():
+    try:
+        hostname = socket.gethostname()
+        ip = socket.gethostbyname(hostname)
+        return ip
+    except:
+        return "0.0.0.0"
+
+def cargar_ranking():
+    if not os.path.exists(RANKING_FILE):
+        return []
+    try:
+        with open(RANKING_FILE, "r") as f:
+            return json.load(f)
+    except:
+        return []
+
+def guardar_ranking(data):
+    with open(RANKING_FILE, "w") as f:
+        json.dump(data, f, indent=4)
+
+def registrar_jugador(nombre, ip, puntos, preguntas_totales, preguntas_correctas):
+    ranking = cargar_ranking()
+
+    # Buscar si ya existe un registro con ese nombre + IP
+    existente = next((r for r in ranking if r["nombre"] == nombre and r["ip"] == ip), None)
+
+    if existente:
+        # Actualizar si el nuevo puntaje es mayor
+        if puntos > existente["puntos"]:
+            existente["puntos"] = puntos
+            existente["preguntas_totales"] = preguntas_totales
+            existente["preguntas_correctas"] = preguntas_correctas
+    else:
+        ranking.append({
+            "nombre": nombre,
+            "ip": ip,
+            "puntos": puntos,
+            "preguntas_totales": preguntas_totales,
+            "preguntas_correctas": preguntas_correctas
+        })
+
+    guardar_ranking(ranking)
+
 
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
@@ -192,13 +243,26 @@ if st.session_state.pantalla_actual == "participar":
 if st.session_state.pantalla_actual == "ranking":
 
     st.header("📊 Ranking de Jugadores")
-    st.write("Aquí se mostrará el ranking.")
+
+    ranking = cargar_ranking()
+
+    if ranking:
+        # Ordenar por puntaje de mayor a menor
+        ranking = sorted(ranking, key=lambda x: x["puntos"], reverse=True)
+
+        st.write("### Tabla de posiciones:")
+
+        for r in ranking:
+            st.write(f"**{r['nombre']}** — {r['puntos']} pts — {r['preguntas_correctas']}/{r['preguntas_totales']} correctas — IP: {r['ip']}")
+    else:
+        st.info("Aún no hay jugadores registrados.")
 
     if st.button("⬅️ Volver al menú"):
         st.session_state.pantalla_actual = "menu"
         st.rerun()
 
     st.stop()
+
 
 
 # ============================
@@ -268,6 +332,17 @@ if st.session_state.pantalla_actual == "juego" and st.session_state.juego_termin
 
     resultado_audio = reproducir_audio_final(st.session_state.puntos, st.session_state.puntuacion_maxima_real)
     st.subheader(resultado_audio)
+
+    # Registrar jugador en ranking
+    ip = obtener_ip()
+    registrar_jugador(
+        nombre=st.session_state.nombre_jugador,
+        ip=ip,
+        puntos=st.session_state.puntos,
+        preguntas_totales=st.session_state.num_preguntas,
+        preguntas_correctas=st.session_state.puntos // 2
+    )
+
 
     if st.button("🔄 Ir al menú principal"):
         st.session_state.indice = 0

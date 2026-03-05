@@ -313,7 +313,7 @@ if st.session_state.pantalla_actual == "pre_juego":
     # Esperar 1 segundo y refrescar pantalla
     time.sleep(1)
     st.experimental_rerun()
-    st.stop()
+
 
 # ============================
 #           JUEGO
@@ -371,7 +371,7 @@ if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_te
             else:
                 st.session_state.juego_terminado = True
                 st.rerun()
-st.stop()
+
 
 # ============================
 #        PANTALLA FINAL
@@ -408,4 +408,4 @@ if st.session_state.pantalla_actual == "juego" and st.session_state.juego_termin
         st.session_state.nombre_jugador = ""
         random.shuffle(st.session_state.pool_preguntas)
         st.rerun()
-st.stop()
+

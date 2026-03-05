@@ -269,7 +269,7 @@ if st.session_state.pantalla_actual == "juego" and st.session_state.juego_termin
     resultado_audio = reproducir_audio_final(st.session_state.puntos, st.session_state.puntuacion_maxima_real)
     st.subheader(resultado_audio)
 
-    if st.button("🔄 Reintentar"):
+    if st.button("🔄 Ir al menú principal"):
         st.session_state.indice = 0
         st.session_state.puntos = 0
         st.session_state.juego_terminado = False

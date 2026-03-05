@@ -49,6 +49,14 @@ if 'indice' not in st.session_state:
     st.session_state.respuesta_confirmada = False
     st.session_state.audio_pregunta_actual = -1
 
+# --- 2.1. Datos del jugador ---
+if 'nombre_jugador' not in st.session_state:
+    st.session_state.nombre_jugador = ""
+
+if 'configuracion_completa' not in st.session_state:
+    st.session_state.configuracion_completa = False
+
+
 # --- 3. FUNCIONES DE AUDIO ----
 # --- 3.1. Audios de reproduccion mientras se juega ---
 URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3" #Audio de pregunta
@@ -114,6 +122,29 @@ st.divider()
 st.progress(st.session_state.indice / st.session_state.num_preguntas)
 st.caption(f"Pregunta {st.session_state.indice + 1} de {st.session_state.num_preguntas} • Puntos: {st.session_state.puntos}")
 
+# --- PANTALLA DE CONFIGURACIÓN INICIAL ---
+if not st.session_state.configuracion_completa:
+
+    st.header("🎮 Configuración del Juego")
+
+    # Nombre del jugador
+    st.session_state.nombre_jugador = st.text_input("Ingresa tu nombre:")
+
+    # Número de preguntas
+    num = st.number_input("Número de preguntas (1 a 20):", min_value=1, max_value=20, step=1)
+
+    # Validación
+    if st.button("Aceptar configuración"):
+        if st.session_state.nombre_jugador.strip() == "":
+            st.error("Debes ingresar un nombre válido.")
+        else:
+            st.session_state.num_preguntas = num
+            st.session_state.configuracion_completa = True
+            st.rerun()
+
+    st.stop()  # Detiene la ejecución hasta que se configure todo
+
+
 if not st.session_state.juego_terminado:
     # Reproducir audio de pregunta
     reproducir_audio_pregunta()
@@ -173,6 +204,7 @@ if not st.session_state.juego_terminado:
 else:
     # PANTALLA FINAL
     st.header("🏁 ¡Fin del Juego!")
+    st.write(f"👤 Jugador: **{st.session_state.nombre_jugador}**")
     st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {PUNTUACION_MAXIMA}")
     resultado_audio = reproducir_audio_final(st.session_state.puntos, PUNTUACION_MAXIMA)  #reproduce el audio segun la puntuacion
     st.subheader(resultado_audio)
@@ -190,5 +222,8 @@ else:
         st.session_state.juego_terminado = False
         st.session_state.respuesta_confirmada = False
         st.session_state.audio_pregunta_actual = -1
+        st.session_state.configuracion_completa = False
+        st.session_state.nombre_jugador = ""
         random.shuffle(st.session_state.pool_preguntas)
         st.rerun()
+

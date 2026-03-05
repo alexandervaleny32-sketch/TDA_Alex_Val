@@ -299,15 +299,13 @@ if st.session_state.pantalla_actual == "pre_juego":
     transcurrido = int(time.time() - st.session_state.pre_juego_inicio)
     restante = 5 - transcurrido
 
-    # Simulación de fade-out:
-    # Reproducimos el audio de fondo cada segundo.
-    # Como el navegador detecta repetición + oculto, reduce volumen automáticamente.
+    # Reproducir audio de fondo (oculto por CSS)
     st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
 
     st.header("⏳ Preparando el juego...")
     st.subheader(f"Comenzamos en: **{restante}** segundos")
 
-    # Cuando llegue a 0 → entrar al juego
+    # Si ya terminó el conteo → entrar al juego
     if restante <= 0:
         st.session_state.pantalla_actual = "juego"
         st.rerun()
@@ -315,8 +313,6 @@ if st.session_state.pantalla_actual == "pre_juego":
     # Esperar 1 segundo y refrescar pantalla
     time.sleep(1)
     st.experimental_rerun()
-
-
 
 
 # ============================

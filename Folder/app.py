@@ -50,17 +50,23 @@ if 'indice' not in st.session_state:
     st.session_state.audio_pregunta_actual = -1
 
 # --- 3. FUNCIONES DE AUDIO ----
+# --- 3.1. Audios de reproduccion mientras se juega ---
 URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3" #Audio de pregunta
 URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3" #Audio de correcto
 URL_INCORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Incorrecto%20(Sonido%20de%20decepci%C3%B3n).mp3" #Audio de incorrecto
 
+# --- 3.2. Audios de reproduccion final --- 
+URL_PUNTUACION_PATETICA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20patetica.mp3"
+URL_PUNTUACION_BAJA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20Baja.mp3"
+URL_PUNTUACION_ALTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20alta.mp3"
+URL_PUNTUACION_SUPREMA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Puntuacion%20Suprema.mp3"
 # Parte de codigo para ocultar barra de reproductor de audios 
 st.markdown("""
 <style>
 .stAudio, audio { display: none; }
 </style>
 """, unsafe_allow_html=True)
-# Funciones para reproduccion de audios
+# Funciones para reproduccion de audios en el transcurso del juego
 def reproducir_sonido_correcto():
     try:
         st.audio(URL_CORRECTO, format="audio/mp3", autoplay=True)  # hace la llamada del audio correto cuando la respuesta es correcta
@@ -81,6 +87,26 @@ def reproducir_audio_pregunta():
                 st.session_state.audio_pregunta_actual = st.session_state.indice # Actualiza el estado para marcar que ya sonó en este índice   
             except:
                 pass
+# Funciones para reproduccion de audios al finalizar el juego
+def reproducir_audio_final(puntos, maximo):
+    porcentaje = (puntos / maximo) * 100
+
+    if porcentaje <= 25:
+        st.audio(URL_PUNTUACION_PATETICA, format="audio/mp3", autoplay=True)
+        return "😢 Puntuación Patética"
+    
+    elif porcentaje < 50:
+        st.audio(URL_PUNTUACION_BAJA, format="audio/mp3", autoplay=True)
+        return "😐 Puntuación Baja"
+    
+    elif porcentaje < 95:
+        st.audio(URL_PUNTUACION_ALTA, format="audio/mp3", autoplay=True)
+        return "🔥 Puntuación Alta"
+    
+    else:
+        st.audio(URL_PUNTUACION_SUPREMA, format="audio/mp3", autoplay=True)
+        return "👑 Puntuación Suprema"
+
 
 # --- 4. INTERFAZ VISUAL ---
 st.title("💰 ¿Quién quiere ser Ingeniero en TDA y Electrónica?")
@@ -148,6 +174,9 @@ else:
     # PANTALLA FINAL
     st.header("🏁 ¡Fin del Juego!")
     st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {PUNTUACION_MAXIMA}")
+    resultado_audio = reproducir_audio_final(st.session_state.puntos, PUNTUACION_MAXIMA)
+    st.subheader(resultado_audio)
+
     
     if st.session_state.puntos >= PUNTUACION_MAXIMA * 0.8:
         st.balloons()

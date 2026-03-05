@@ -253,7 +253,10 @@ if st.session_state.pantalla_actual == "ranking":
         st.write("### Tabla de posiciones:")
 
         for r in ranking:
-            st.write(f"**{r['nombre']}** — {r['puntos']} pts — {r['preguntas_correctas']}/{r['preguntas_totales']} correctas — IP: {r['ip']}")
+            st.write(
+                f"**{r['nombre']}** — {r['puntos']} pts — "
+                f"{r['preguntas_correctas']}/{r['preguntas_totales']} correctas"
+            )
     else:
         st.info("Aún no hay jugadores registrados.")
 
@@ -262,6 +265,7 @@ if st.session_state.pantalla_actual == "ranking":
         st.rerun()
 
     st.stop()
+
 
 
 

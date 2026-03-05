@@ -139,6 +139,7 @@ if not st.session_state.configuracion_completa:
             st.error("Debes ingresar un nombre válido.")
         else:
             st.session_state.num_preguntas = num
+            st.session_state.puntuacion_maxima_real = st.session_state.num_preguntas * PUNTOS_POR_PREGUNTA
             st.session_state.configuracion_completa = True
             st.rerun()
 
@@ -205,8 +206,8 @@ else:
     # PANTALLA FINAL
     st.header("🏁 ¡Fin del Juego!")
     st.write(f"👤 Jugador: **{st.session_state.nombre_jugador}**")
-    st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {PUNTUACION_MAXIMA}")
-    resultado_audio = reproducir_audio_final(st.session_state.puntos, PUNTUACION_MAXIMA)  #reproduce el audio segun la puntuacion
+    st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {st.session_state.puntuacion_maxima_real}")
+    resultado_audio = reproducir_audio_final(st.session_state.puntos, st.session_state.puntuacion_maxima_real)  #reproduce el audio segun la puntuacion
     st.subheader(resultado_audio)
 
     

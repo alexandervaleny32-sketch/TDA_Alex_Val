@@ -227,7 +227,7 @@ if st.session_state.pantalla_actual == "menu":
 # ============================
 if st.session_state.pantalla_actual == "participar":
 
-    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True))
+    st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
     
     st.header("📝 Configuración del Jugador")
 

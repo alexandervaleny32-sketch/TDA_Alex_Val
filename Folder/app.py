@@ -314,6 +314,9 @@ if st.session_state.pantalla_actual == "pre_juego":
     time.sleep(1)
     st.experimental_rerun()
 
+    st.stop()   # ← ESTE ERA EL QUE FALTABA
+
+
 
 # ============================
 #           JUEGO

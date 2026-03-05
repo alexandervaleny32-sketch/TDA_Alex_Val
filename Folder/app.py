@@ -93,19 +93,19 @@ def reproducir_audio_final(puntos, maximo):
 
     if porcentaje <= 25:
         st.audio(URL_PUNTUACION_PATETICA, format="audio/mp3", autoplay=True)
-        return "😢 Puntuación Patética"
+        return "😢 Puntuación Patética: Puedes ser tiktoker mi amig@"
     
     elif porcentaje < 50:
         st.audio(URL_PUNTUACION_BAJA, format="audio/mp3", autoplay=True)
-        return "😐 Puntuación Baja"
+        return "😐 Puntuación Baja: Puedes esforzarte mas, si lo deseas claro esta"
     
     elif porcentaje < 95:
         st.audio(URL_PUNTUACION_ALTA, format="audio/mp3", autoplay=True)
-        return "🔥 Puntuación Alta"
+        return "🔥 Puntuación Alta: Vas por buen camino mi amigo"
     
     else:
         st.audio(URL_PUNTUACION_SUPREMA, format="audio/mp3", autoplay=True)
-        return "👑 Puntuación Suprema"
+        return "👑 Puntuación Suprema: Nada que decir Master"
 
 
 # --- 4. INTERFAZ VISUAL ---
@@ -174,7 +174,7 @@ else:
     # PANTALLA FINAL
     st.header("🏁 ¡Fin del Juego!")
     st.metric("PUNTUACIÓN FINAL", f"{st.session_state.puntos} / {PUNTUACION_MAXIMA}")
-    resultado_audio = reproducir_audio_final(st.session_state.puntos, PUNTUACION_MAXIMA)
+    resultado_audio = reproducir_audio_final(st.session_state.puntos, PUNTUACION_MAXIMA)  #reproduce el audio segun la puntuacion
     st.subheader(resultado_audio)
 
     

@@ -274,35 +274,40 @@ if st.session_state.pantalla_actual == "participar":
 # ============================
 if st.session_state.pantalla_actual == "ranking":
 
-    # st.audio(URL_AUDIO_FONDO, format="audio/mp3", autoplay=True)
+    # Limpiar delay del audio si existe
     if "audio_delay" in st.session_state:
         del st.session_state.audio_delay
-        
+
     st.header("📊 Ranking de Jugadores")
 
     ranking = cargar_ranking()
 
-    if ranking:
+    # Sub-menú: elegir cantidad de preguntas
+    st.subheader("Selecciona el grupo de preguntas:")
+    grupo = st.number_input("Cantidad de preguntas:", min_value=1, max_value=20, step=1)
+
+    # Filtrar ranking por cantidad de preguntas
+    ranking_filtrado = [r for r in ranking if r["preguntas_totales"] == grupo]
+
+    st.write(f"### Jugadores que eligieron {grupo} preguntas:")
+
+    if ranking_filtrado:
         # Ordenar por puntaje de mayor a menor
-        ranking = sorted(ranking, key=lambda x: x["puntos"], reverse=True)
+        ranking_filtrado = sorted(ranking_filtrado, key=lambda x: x["puntos"], reverse=True)
 
-        st.write("### Tabla de posiciones:")
-
-        for r in ranking:
+        for r in ranking_filtrado:
             st.write(
                 f"**{r['nombre']}** — {r['puntos']} pts — "
                 f"{r['preguntas_correctas']}/{r['preguntas_totales']} correctas"
             )
     else:
-        st.info("Aún no hay jugadores registrados.")
+        st.info("No hay jugadores registrados en este grupo todavía.")
 
     if st.button("⬅️ Volver al menú"):
         st.session_state.pantalla_actual = "menu"
         st.rerun()
 
     st.stop()
-
-
 
 
 # ============================

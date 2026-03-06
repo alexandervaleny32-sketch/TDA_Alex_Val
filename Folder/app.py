@@ -282,9 +282,14 @@ if st.session_state.pantalla_actual == "ranking":
 
     ranking = cargar_ranking()
 
-    # Sub-menú: elegir cantidad de preguntas
+    # Sub-menú con dropdown para elegir el grupo
     st.subheader("Selecciona el grupo de preguntas:")
-    grupo = st.number_input("Cantidad de preguntas:", min_value=1, max_value=20, step=1)
+
+    grupo = st.selectbox(
+        "Cantidad de preguntas:",
+        list(range(1, 21)),   # opciones del 1 al 20
+        index=0               # valor inicial = 1
+    )
 
     # Filtrar ranking por cantidad de preguntas
     ranking_filtrado = [r for r in ranking if r["preguntas_totales"] == grupo]

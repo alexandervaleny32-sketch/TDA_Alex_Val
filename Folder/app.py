@@ -11,10 +11,10 @@ TIEMPO_ESPERA_INCORRECTO = 6  # Configuracion de tiempo para que el audio se pue
 REPRODUCIR_AUDIO_PREGUNTA = True # Activa o desactiva la pista de audio
 
 # --- CONFIGURACIÓN DE LA PÁGINA ---
-st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰")
+st.set_page_config(page_title="Trivia Ultra-Master IUT", page_icon="💰") # Configura el nombre en la pestaña del navegador y el icono
 
-# Ocultar TODOS los reproductores de audio
-st.markdown("""
+# Ocultar TODOS los reproductores de audio de Streamlit inyectando en python código CSS
+st.markdown("""   
 <style>
 audio, .stAudio {
     display: none !important;
@@ -76,6 +76,7 @@ if 'configuracion_completa' not in st.session_state:
 
 
 # --- 3. FUNCIONES DE AUDIO ----
+# ---Enlaces a archivos MP3 del repositorio en GitHub
 # --- 3.1. Audios de reproduccion mientras se juega ---
 URL_AUDIO_PREGUNTA = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Pregunta%20(Qui%C3%A9n%20quiere%20ser%20millonario).mp3" #Audio de pregunta
 URL_CORRECTO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/main/Folder/Respuesta%20correcta_(PAPI%20CACHAME).mp3" #Audio de correcto
@@ -92,7 +93,7 @@ URL_AUDIO_FONDO = "https://github.com/alexandervaleny32-sketch/TDA_Alex_Val/raw/
 
 # --- Controlador de audio de fondo ---
 def reproducir_audio_fondo():
-    # Pantallas donde SÍ debe sonar
+    # Pantallas donde se debe reproducir la pista
     pantallas_con_audio = ["menu", "participar", "ranking"]
 
     if st.session_state.pantalla_actual in pantallas_con_audio:
@@ -141,7 +142,7 @@ def reproducir_audio_final(puntos, maximo):
         st.audio(URL_PUNTUACION_SUPREMA, format="audio/mp3", autoplay=True)
         return "👑 Puntuación Suprema: Nada que decir Master"
 
-# --- 3.3. FUNCIONES PARA RANKING ---
+# --- 3.3. FUNCIONES PARA RANKING (Archivo JSON) ---
 import json
 import os
 import socket
@@ -171,8 +172,8 @@ def guardar_ranking(data):
 
 def registrar_jugador(nombre, ip, puntos, preguntas_totales, preguntas_correctas):
     ranking = cargar_ranking()
-
-    # Buscar si ya existe un registro con ese nombre + IP
+    
+    # Lógica para verificar si el jugador ya existe y si mejoró su marca buscando si ya existe un registro con ese nombre + IP
     existente = next((r for r in ranking if r["nombre"] == nombre and r["ip"] == ip), None)
 
     if existente:
@@ -265,7 +266,6 @@ if st.session_state.pantalla_actual == "participar":
                 st.session_state.pantalla_actual = "juego"
                 st.rerun()
 
-
     st.stop()
 
 
@@ -291,7 +291,7 @@ if st.session_state.pantalla_actual == "ranking":
         index=0               # valor inicial = 1
     )
 
-    # Filtrar ranking por cantidad de preguntas
+    # Filtrar el ranking por cantidad de preguntas
     ranking_filtrado = [r for r in ranking if r["preguntas_totales"] == grupo]
 
     st.write(f"### Jugadores que eligieron {grupo} preguntas:")
@@ -350,7 +350,7 @@ if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_te
 
     if seleccion and not st.session_state.respuesta_confirmada:
         st.session_state.respuesta_confirmada = True
-
+    
         if seleccion == pregunta_actual['c']:
             st.success("¡CORRECTO! 🌟")
             reproducir_sonido_correcto()
@@ -378,7 +378,7 @@ if st.session_state.pantalla_actual == "juego" and not st.session_state.juego_te
 # ============================
 #        PANTALLA FINAL
 # ============================
-if st.session_state.pantalla_actual == "juego" and st.session_state.juego_terminado:
+if st.session_state.pantalla_actual == "juego" and st.session_state.juego_terminado: # Muestra al participante su desempeño en el juego y se guarda en el ranking
 
     if "audio_delay" in st.session_state:
         del st.session_state.audio_delay
